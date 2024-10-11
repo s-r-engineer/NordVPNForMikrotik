@@ -40,5 +40,5 @@ Third is **updateNordVPN_GlobalEndpoint**. It will query NordVPN API in order to
 
 ### Notes
 * **updateNordVPN_GlobalEndpoint** script exist because I am often having issues with speed and connection stability which this script will fix.
-* I find it convinient to use aliases like 
+* I find it convinient to use aliases like `alias updateEndpoint='ssh user@192.168.88.1 /system script run updateNordVPN_GlobalEndpoint'`
 * From time to time you'll need to update own private key in WireGuard interface. Sequence is the same as for deployemnt (described in **How to get private key**). Do it in Winbox/Web/Console with command `/interface/wireguard/ set private-key=YourPrivateKeyHere [find comment="NordVPN_Global"]`
