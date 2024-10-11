@@ -1,5 +1,7 @@
 This block is to deploy NordVPN wireguard client with general VPN access.
 
+**!!!!!!!!!!No warranty whatsoever because messing rules and stuff can be dangerous. So you anyway need to know what you are doing.**
+
 ### How to get private key
 1. You need wireguard-tools to be installed in linux or wireguard client to be installed on mac or windows.
 2. You need official NordVPN cliennt authenticated
@@ -12,10 +14,11 @@ This block is to deploy NordVPN wireguard client with general VPN access.
 Run this in mikrotik's console after pasting your private key into wireguard interface.
 * Do not worry about peer's address and public key. It will be updated with correct ones later.
 * You would like to update addresses for the firewall rules if you are not using default Mikrotik network which is 192.168.88.0/24
+* Please make sure that rules are in correct order before swithcing VPN on.
 
 ```
 #interface
-/interface wireguard add comment="NordVPN_Global" disabled=yes name=NordVPN_Global private-key="your private key here"
+/interface wireguard add comment="NordVPN_Global" disabled=yes name=NordVPN_Global private-key="/rXTka00HS0DwOZopQYls="
 #peer
 /interface wireguard peers add allowed-address=0.0.0.0/0 disabled=yes comment="NordVPN_Global" endpoint-address=someunknown.nordvpn.com endpoint-port=51820 interface=NordVPN_Global name=NordVPN_Global public-key="K53l2wOIHU3262sX5N/5kAvCvt4r55lNui30EbvaDlE="
 #ip address
@@ -24,10 +27,16 @@ Run this in mikrotik's console after pasting your private key into wireguard int
 /ip firewall filter add action=accept chain=forward comment="NordVPN_Global" disabled=yes out-interface=NordVPN_Global src-address=192.168.88.0/24 place-before=0
 /ip firewall filter add action=accept chain=forward comment="NordVPN_Global" connection-state=established,related disabled=yes dst-address=192.168.88.0/24 in-interface=NordVPN_Global place-before=0
 /ip firewall filter add action=drop chain=forward comment="NordVPN_Global" disabled=yes in-interface=NordVPN_Global place-before=0
+/ip firewall filter add action=drop chain=forward comment="NordVPN_Global" disabled=yes src-address=192.168.88.0/24 place-before=0
 #firewall nat
 /ip firewall nat add action=masquerade chain=srcnat comment="NordVPN_Global" disabled=yes out-interface=NordVPN_Global
+#route table
+/routing table add name=NordVPN_Global comment=NordVPN_Global fib
 #ip route
-/ip route add comment="NordVPN_Global" disabled=yes distance=1 dst-address=0.0.0.0/0 gateway=NordVPN_Global pref-src=""
+/ip route add comment="NordVPN_Global" disabled=yes distance=1 dst-address=0.0.0.0/0 gateway=NordVPN_Global routing-table=NordVPN_Global
+#route rule
+/routing/rule add dst-address=192.168.88.0/24 disabled=yes action=lookup table=main comment=NordVPN_Global
+/routing/rule add src-address=192.168.88.0/24 disabled=yes action=lookup-only-in-table table=NordVPN_Global comment=NordVPN_Global
 ```
 
 Next you need to create scripts.

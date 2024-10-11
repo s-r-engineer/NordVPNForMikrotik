@@ -6,6 +6,7 @@
     /ip/firewall/nat/ enable [find comment="NordVPN_Global"]
     /ip/firewall/filter enable [find comment="NordVPN_Global"]
     /ip/address/ enable [find comment="NordVPN_Global"]
+    /routing/rule enable [find comment="NordVPN_Global"]
     /ip/route/ enable [find comment="NordVPN_Global"]
 } else={
     /interface/wireguard/ peers disable [find comment="NordVPN_Global"]
@@ -13,5 +14,6 @@
     /ip/firewall/nat/ disable [find comment="NordVPN_Global"]
     /ip/firewall/filter disable [find comment="NordVPN_Global"]
     /ip/address/ disable [find comment="NordVPN_Global"]
+    /routing/rule disable [find comment="NordVPN_Global"]
     /ip/route/ disable [find comment="NordVPN_Global"]
 }
